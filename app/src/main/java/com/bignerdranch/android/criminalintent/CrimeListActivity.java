@@ -12,8 +12,4 @@ public class CrimeListActivity extends SingleFragmentActivity {
         return new CrimeListFragment();
     }
 
-    public void makingAChange() {
-        // do nothing.
-    }
-
 }
