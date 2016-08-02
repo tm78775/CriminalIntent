@@ -84,7 +84,6 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View v) {
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);
-            // this is a change fool.
         }
 
     }
