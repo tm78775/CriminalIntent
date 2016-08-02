@@ -13,23 +13,40 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.UUID;
+
 /**
  * Created by TMiller on 7/27/2016.
  */
 public class CrimeFragment extends Fragment {
 
+    private static final String ARG_CRIME_ID = "crime_id";
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
 
+
     /*
-        Overridden (Inherited) methods
+     *  Return a new instance of itself.
+     */
+    public static CrimeFragment newInstance(UUID crimeId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID, crimeId);
+
+        CrimeFragment fragment = new CrimeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    /*
+     *  Overridden (Inherited) methods
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCrime = new Crime();
+        UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+        mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
     }
 
     @Override
@@ -42,6 +59,10 @@ public class CrimeFragment extends Fragment {
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
         mDateButton = (Button) v.findViewById(R.id.crime_date);
         mSolvedCheckBox = (CheckBox) v.findViewById(R.id.crime_solved);
+
+        // assign fields and checkboxes.
+        mTitleField.setText(mCrime.getTitle());
+        mSolvedCheckBox.setChecked(mCrime.isSolved());
 
         // add listeners where appropriate.
         mTitleField.addTextChangedListener(new TextWatcher() {
