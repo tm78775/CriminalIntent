@@ -14,20 +14,20 @@ public class DatePickerActivity extends SingleFragmentActivity {
 
     public static Intent newInstance(Context context, Date date) {
         Intent intent = new Intent(context, DatePickerActivity.class);
-        intent.putExtra(DatePickerFragmentActivity.EXTRA_DATE, date);
+        intent.putExtra(DatePickerFragment.EXTRA_DATE, date);
         return intent;
     }
 
     @Override
     protected Fragment createFragment() {
-        DatePickerFragmentActivity fragment = new DatePickerFragmentActivity();
+        DatePickerFragment fragment = new DatePickerFragment();
         Bundle args = new Bundle();
 
-        if (getIntent().hasExtra(DatePickerFragmentActivity.EXTRA_DATE)) {
-            args.putSerializable(DatePickerFragmentActivity.EXTRA_DATE, getIntent().getSerializableExtra(DatePickerFragmentActivity.EXTRA_DATE));
+        if (getIntent().hasExtra(DatePickerFragment.EXTRA_DATE)) {
+            args.putSerializable(DatePickerFragment.EXTRA_DATE, getIntent().getSerializableExtra(DatePickerFragment.EXTRA_DATE));
         }
         else {
-            args.putSerializable(DatePickerFragmentActivity.EXTRA_DATE, new Date());
+            args.putSerializable(DatePickerFragment.EXTRA_DATE, new Date());
         }
 
         fragment.setArguments(args);

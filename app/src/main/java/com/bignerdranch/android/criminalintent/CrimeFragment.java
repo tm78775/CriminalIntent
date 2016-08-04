@@ -95,12 +95,6 @@ public class CrimeFragment extends Fragment {
         updateDate(df.format("MMMM dd, yyyy", mCrime.getDate()));
         mDateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // DATEPICKER FRAGMENT DIALOG CODE. (FROM EARLIER IN THE CHAPTER)
-                // FragmentManager fm = getFragmentManager();
-                // DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
-                // dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                // dialog.show(fm, DIALOG_DATE);
-
                 // LAUNCH A NEW ACTIVITY TO CONTAIN THE FRAGMENT.
                 Intent intent = DatePickerActivity.newInstance(getActivity(), mCrime.getDate());
                 startActivityForResult(intent, REQUEST_DATE);
@@ -137,7 +131,7 @@ public class CrimeFragment extends Fragment {
 
         switch(requestCode) {
             case REQUEST_DATE:
-                Date date = (Date) data.getSerializableExtra(DatePickerFragmentActivity.EXTRA_DATE);
+                Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
                 mCrime.setDate(date);
                 updateDate(mCrime.getDate().toString());
                 break;
