@@ -1,21 +1,18 @@
 package com.bignerdranch.android.criminalintent;
 
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +22,7 @@ public class DatePickerFragment extends AppCompatDialogFragment {
     public static final String EXTRA_DATE = "com.bignerdranch.android.criminalintent.date";
     private static final String ARG_DATE = "date";
     private DatePicker mDatePicker;
+    private Button mOkButton;
 
     public static DatePickerFragment newInstance(Date date) {
         Bundle args = new Bundle();
@@ -35,6 +33,25 @@ public class DatePickerFragment extends AppCompatDialogFragment {
         return fragment;
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.dialog_date, container, false);
+
+        mDatePicker = (DatePicker) view.findViewById(R.id.dialog_date_date_picker);
+        mOkButton = (Button) view.findViewById(R.id.ok_button);
+
+        // get the date from the arguments.
+        Date date = (Date) getArguments().getSerializable(ARG_DATE);
+
+        // parse the date into a calendar object.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        mDatePicker.init(date.getYear(), date.getMonth(), date.getDay(), null);
+        return view;
+    }
+
+    /*
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -71,6 +88,9 @@ public class DatePickerFragment extends AppCompatDialogFragment {
                 .create();
 
     }
+*/
+
+
 
     private void sendResult(int resultCode, Date date) {
         if (getTargetFragment() == null) {
