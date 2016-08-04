@@ -1,7 +1,11 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +23,10 @@ public class TimePickerFragment extends AppCompatDialogFragment {
     private static final String ARG_TIME = "time.argument";
     private TimePicker mTimePicker;
 
-    public static TimePickerFragment newInstance(Calendar calendar) {
+    public static TimePickerFragment newInstance(Date crimeDate) {
 
         // on retrieving a new instance, we set the timepicker widget to the time currently set in the Crime object.
-        Date date = calendar.getTime();
+        Date date = crimeDate;
 
         // set the time in the fragment arguments bundle.
         Bundle args = new Bundle();
@@ -45,8 +49,31 @@ public class TimePickerFragment extends AppCompatDialogFragment {
         mTimePicker.setCurrentHour(date.getHours());
         mTimePicker.setCurrentMinute(date.getMinutes());
 
-        // todo: this is where you left off.
-        return null;
+        return new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .setTitle(R.string.time_picker_title)
+                .setPositiveButton(android.R.string.ok,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Date date = new Date();
+                            date.setHours(mTimePicker.getCurrentHour());
+                            date.setMinutes(mTimePicker.getCurrentMinute());
+                            sendResult(Activity.RESULT_OK, date);
+                        }
+                })
+                .create();
+
+    }
+
+    private void sendResult(int resultCode, Date date) {
+        if (getTargetFragment() == null) {
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_TIME, date);
+
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
 
 }
