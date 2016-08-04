@@ -74,6 +74,7 @@ public class TimePickerFragment extends AppCompatDialogFragment {
         intent.putExtra(EXTRA_TIME, date);
 
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+        onDetach();
     }
 
 }

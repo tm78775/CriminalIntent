@@ -95,10 +95,15 @@ public class CrimeFragment extends Fragment {
         updateDate(df.format("MMMM dd, yyyy", mCrime.getDate()));
         mDateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
-                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                dialog.show(fm, DIALOG_DATE);
+                // DATEPICKER FRAGMENT DIALOG CODE. (FROM EARLIER IN THE CHAPTER)
+                // FragmentManager fm = getFragmentManager();
+                // DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
+                // dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                // dialog.show(fm, DIALOG_DATE);
+
+                // LAUNCH A NEW ACTIVITY TO CONTAIN THE FRAGMENT.
+                Intent intent = DatePickerActivity.newInstance(getActivity(), mCrime.getDate());
+                startActivityForResult(intent, REQUEST_DATE);
             }
         });
 
@@ -117,7 +122,6 @@ public class CrimeFragment extends Fragment {
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                // Set the crime's solved property.
                 mCrime.setSolved(isChecked);
             }
         });
@@ -133,7 +137,7 @@ public class CrimeFragment extends Fragment {
 
         switch(requestCode) {
             case REQUEST_DATE:
-                Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+                Date date = (Date) data.getSerializableExtra(DatePickerFragmentActivity.EXTRA_DATE);
                 mCrime.setDate(date);
                 updateDate(mCrime.getDate().toString());
                 break;
@@ -148,9 +152,8 @@ public class CrimeFragment extends Fragment {
 
     }
 
-    private void updateDate(CharSequence format) {
-        mDateButton.setText(format);
-    }
+    // Update the button texts
+    private void updateDate(CharSequence format) { mDateButton.setText(format); }
     private void updateTime(CharSequence format) { mTimeButton.setText(format); }
 
 }
