@@ -46,7 +46,7 @@ public class DatePickerFragment extends Fragment {
         mOkButton = (Button) v.findViewById(R.id.ok_button);
         mOkButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                setResult(Activity.RESULT_OK, mDatePicker.getYear(), mDatePicker.getMonth(), mDatePicker.getDayOfMonth());
+                setResult(Activity.RESULT_OK, (mDatePicker.getYear() - 1900), mDatePicker.getMonth(), mDatePicker.getDayOfMonth());
             }
         });
 
