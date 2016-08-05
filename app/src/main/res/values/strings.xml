@@ -13,6 +13,8 @@
     <string name="subtitle_format">%1$s crimes</string>
     <string name="delete_crime">Delete Crime</string>
     <string name="deleted">Crime Deleted</string>
+    <string name="its_empty">It\'s empty! Add a crime!</string>
+    <string name="add_crime">Add Crime!</string>
     <plurals name="subtitle_plural">
         <item quantity="one">%1$s crime</item>
         <item quantity="other">%1$s crimes</item>
