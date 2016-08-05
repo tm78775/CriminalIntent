@@ -99,6 +99,9 @@ public class CrimeListFragment extends Fragment {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
+        mCrimeAdapter = new CrimeAdapter(crimes);
+        mCrimeRecyclerView.setAdapter(mCrimeAdapter);
+        /* THIS HAD TO BE REMOVED TO MAKE THE DELETE FUNCTIONALITY OPERATIONAL.
         if (mCrimeAdapter == null) {
             mCrimeAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mCrimeAdapter);
@@ -111,6 +114,7 @@ public class CrimeListFragment extends Fragment {
                 mCrimeAdapter.notifyDataSetChanged();
             }
         }
+        */
 
         updateSubtitle();
     }
@@ -118,7 +122,7 @@ public class CrimeListFragment extends Fragment {
     private void updateSubtitle() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
-        String subtitle = getString(R.string.subtitle_format, crimeCount);
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeCount, crimeCount);
 
         if(!mSubtitleVisible) {
             subtitle = null;
