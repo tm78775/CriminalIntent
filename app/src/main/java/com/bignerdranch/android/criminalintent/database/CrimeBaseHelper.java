@@ -20,13 +20,14 @@ public class CrimeBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + CrimeTable.NAME
-            + "(" +
-              Cols.UUID + ", " +
-              Cols.TITLE + ", " +
-              Cols.DATE + ", " +
-              Cols.SOLVED
-            + ")"
+        db.execSQL("create table " + CrimeTable.NAME +
+            "(" +
+              Cols.UUID    + ", " +
+              Cols.TITLE   + ", " +
+              Cols.DATE    + ", " +
+              Cols.SOLVED  + ", " +
+              Cols.SUSPECT +
+            ")"
         );
     }
 

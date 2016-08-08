@@ -100,10 +100,11 @@ public class CrimeLab {
     private static ContentValues getContentValues(Crime crime) {
         ContentValues values = new ContentValues();
 
-        values.put(CrimeDbSchema.Cols.UUID, crime.getId().toString());
-        values.put(CrimeDbSchema.Cols.TITLE, crime.getTitle());
-        values.put(CrimeDbSchema.Cols.DATE, crime.getDate().getTime());
-        values.put(CrimeDbSchema.Cols.SOLVED, crime.isSolved() ? 1 : 0);
+        values.put(CrimeDbSchema.Cols.UUID   , crime.getId().toString());
+        values.put(CrimeDbSchema.Cols.TITLE  , crime.getTitle());
+        values.put(CrimeDbSchema.Cols.DATE   , crime.getDate().getTime());
+        values.put(CrimeDbSchema.Cols.SOLVED , crime.isSolved() ? 1 : 0);
+        values.put(CrimeDbSchema.Cols.SUSPECT, crime.getSuspect());
 
         return values;
     }
