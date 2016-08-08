@@ -93,6 +93,7 @@ public class CrimeLab {
                 CrimeDbSchema.Cols.UUID + " =? ",
                 new String[] { uuidString }
         );
+
     }
 
     private static ContentValues getContentValues(Crime crime) {
