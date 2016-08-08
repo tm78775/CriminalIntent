@@ -18,6 +18,11 @@ public class Crime {
         mDate = new Date();
     }
 
+    public Crime(UUID id) {
+        mId = id;
+        mDate = new Date();
+    }
+
     // Getters and Setters.
     public UUID getId() { return mId; }
 

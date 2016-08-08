@@ -118,7 +118,10 @@ public class CrimeListFragment extends Fragment {
 
         mCrimeAdapter = new CrimeAdapter(crimes);
         mCrimeRecyclerView.setAdapter(mCrimeAdapter);
-        /* THIS HAD TO BE REMOVED TO MAKE THE DELETE FUNCTIONALITY OPERATIONAL.
+        mCrimeAdapter.setCrimes(crimes);
+        mCrimeAdapter.notifyDataSetChanged();
+
+        /* THIS HAD TO BE REMOVED TO MAKE THE DELETE FUNCTIONALITY OPERATIONAL. IT WAS THROWING AN EXCEPTION.
         if (mCrimeAdapter == null) {
             mCrimeAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mCrimeAdapter);
@@ -221,6 +224,10 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        public void setCrimes(List<Crime> crimes) {
+            mCrimes = crimes;
         }
     }
 }
