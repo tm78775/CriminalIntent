@@ -78,9 +78,11 @@ public class CrimeLab {
         return crimes;
     }
 
-    // todo: add this functionality with db.
     public void deleteCrime(Crime crime) {
-
+        String uuidString = crime.getId().toString();
+        mDatabase.delete(CrimeDbSchema.CrimeTable.NAME
+                , CrimeDbSchema.Cols.UUID + " =? "
+                , new String[] { uuidString });
     }
 
     public void updateCrime(Crime crime) {
@@ -93,7 +95,6 @@ public class CrimeLab {
                 CrimeDbSchema.Cols.UUID + " =? ",
                 new String[] { uuidString }
         );
-
     }
 
     private static ContentValues getContentValues(Crime crime) {
