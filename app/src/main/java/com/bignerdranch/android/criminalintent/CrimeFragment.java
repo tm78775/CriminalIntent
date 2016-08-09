@@ -2,7 +2,11 @@ package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -33,12 +37,14 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_TIME = "DialogTime";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
+    private static final int REQUEST_CONTACT = 2;
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
+    private Button mSuspectButton;
 
 
     /*
@@ -145,6 +151,20 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        // setup the suspect button
+        final Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        mSuspectButton = (Button) v.findViewById(R.id.crime_suspect);
+
+        PackageManager packageManager = getActivity().getPackageManager();
+        if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null) {
+            mSuspectButton.setEnabled(false);
+        }
+
+        mSuspectButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivityForResult(pickContact, REQUEST_CONTACT);
+            }
+        });
         return v;
     }
 
@@ -185,6 +205,38 @@ public class CrimeFragment extends Fragment {
                 date.setMinutes(time.getMinutes());
                 date.setHours(time.getHours());
                 updateTime(date.getHours() + ":" + date.getMinutes());
+                break;
+            case REQUEST_CONTACT:
+                if (data == null) {
+                    return;
+                }
+
+                Uri contactUri = data.getData();
+
+                // specify which fields you want to query to return values for.
+                String[] queryFields = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
+
+                // perform query with the contentresolver.
+                Cursor cursor = getActivity()
+                        .getContentResolver()
+                        .query(contactUri, queryFields, null, null, null);
+
+                try {
+                    // double check that you actually got results.
+                    if (cursor.getCount() == 0) {
+                        return;
+                    }
+
+                    // Pull out the first column of the first row of data.
+                    cursor.moveToFirst();
+                    String suspect = cursor.getString(0);
+                    mCrime.setSuspect(suspect);
+                    mSuspectButton.setText(suspect);
+                }
+                finally {
+                    cursor.close();
+                }
+
                 break;
         }
 
