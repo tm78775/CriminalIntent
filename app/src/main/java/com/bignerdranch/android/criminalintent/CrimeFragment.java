@@ -45,6 +45,7 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mCallSuspectButton;
 
 
     /*
@@ -88,6 +89,7 @@ public class CrimeFragment extends Fragment {
         mTimeButton = (Button) v.findViewById(R.id.crime_time);
         mSolvedCheckBox = (CheckBox) v.findViewById(R.id.crime_solved);
         mReportButton = (Button) v.findViewById(R.id.crime_report);
+        mCallSuspectButton = (Button) v.findViewById(R.id.phone_suspect);
 
         // assign fields and checkboxes.
         mTitleField.setText(mCrime.getTitle());
@@ -163,6 +165,14 @@ public class CrimeFragment extends Fragment {
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivityForResult(pickContact, REQUEST_CONTACT);
+            }
+        });
+
+        // setup the call suspect button.
+        mCallSuspectButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // todo: This is where you left off.
+                // Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.);
             }
         });
         return v;
