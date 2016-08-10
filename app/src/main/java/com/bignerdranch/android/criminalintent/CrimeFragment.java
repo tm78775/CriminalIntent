@@ -124,7 +124,7 @@ public class CrimeFragment extends Fragment {
         });
 
         // setup the time button and dialog fragment.
-        updateTime(mCrime.getDate().getHours() + ":" + mCrime.getDate().getMinutes());
+        mTimeButton.setText(mCrime.getDate().getHours() + ":" + mCrime.getDate().getMinutes());
         mTimeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
@@ -218,7 +218,7 @@ public class CrimeFragment extends Fragment {
                 date = mCrime.getDate();
                 date.setMinutes(time.getMinutes());
                 date.setHours(time.getHours());
-                updateTime(date.getHours() + ":" + date.getMinutes());
+                mTimeButton.setText(date.getHours() + ":" + date.getMinutes());
                 break;
             case REQUEST_CONTACT:
                 if (data == null) {
@@ -292,7 +292,6 @@ public class CrimeFragment extends Fragment {
 
     // Update the button texts
     private void updateDate(CharSequence format) { mDateButton.setText(format); }
-    private void updateTime(CharSequence format) { mTimeButton.setText(format); }
 
     private void deleteCrime() {
         CrimeLab.get(getActivity()).deleteCrime(mCrime);
