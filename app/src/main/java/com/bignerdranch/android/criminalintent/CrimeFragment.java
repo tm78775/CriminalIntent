@@ -39,6 +39,7 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_TIME = 1;
     private static final int REQUEST_CONTACT = 2;
     private Crime mCrime;
+    private String mSuspectNumber;
     private EditText mTitleField;
     private Button mDateButton;
     private Button mTimeButton;
@@ -171,10 +172,13 @@ public class CrimeFragment extends Fragment {
         // setup the call suspect button.
         mCallSuspectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // todo: This is where you left off.
-                // Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.);
+                String number = "tel:" + Uri.parse(mSuspectNumber);
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse(number));
+                startActivity(intent);
             }
         });
+        mCallSuspectButton.setEnabled(false);
         return v;
     }
 
@@ -225,8 +229,6 @@ public class CrimeFragment extends Fragment {
 
                 // specify which fields you want to query to return values for.
                 String[] queryFields = new String[] {
-                        // ContactsContract.Contacts.DISPLAY_NAME,
-                        // ContactsContract.Contacts.HAS_PHONE_NUMBER
                         ContactsContract.Contacts._ID
                         , ContactsContract.Contacts.DISPLAY_NAME
                 };
@@ -249,26 +251,34 @@ public class CrimeFragment extends Fragment {
                     mCrime.setSuspect(suspect);
                     mSuspectButton.setText(suspect);
 
-                    Cursor phoneCursor = getActivity()
+
+                    // Query to get the suspect's number to call.
+                    Cursor cursorPhone = getActivity()
                             .getContentResolver()
-                            .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-                                , null
-                                , ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " =? "
-                                , new String[] { Integer.toString(suspectId) }
-                                , null
+                            .query(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER},
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " =? AND " +
+                                        ContactsContract.CommonDataKinds.Phone.TYPE + " = " + ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE,
+                                new String[] { Integer.toString(suspectId) },
+                                null
                             );
-                        try {
-                            if (phoneCursor.getCount() == 0) {
-                                return;
-                            }
 
-                            phoneCursor.moveToFirst();
-                            phoneCursor.getString(0);
-                        }
-                        finally {
-                            phoneCursor.close();
+                    try {
+                        cursorPhone.moveToFirst();
+                        if (cursorPhone.getCount() == 0) {
+                            return;
                         }
 
+                        mSuspectNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        if (mSuspectNumber.length() > 6) {
+                            mCallSuspectButton.setEnabled(true);
+                        }
+                    }
+                    finally {
+                        cursorPhone.close();
+                    }
 
                 }
                 finally {
