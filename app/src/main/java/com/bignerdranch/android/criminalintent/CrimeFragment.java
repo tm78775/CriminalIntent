@@ -39,7 +39,6 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_TIME = 1;
     private static final int REQUEST_CONTACT = 2;
     private Crime mCrime;
-    private String mSuspectNumber;
     private EditText mTitleField;
     private Button mDateButton;
     private Button mTimeButton;
@@ -157,6 +156,10 @@ public class CrimeFragment extends Fragment {
         // setup the suspect button
         final Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         mSuspectButton = (Button) v.findViewById(R.id.crime_suspect);
+        if (!mCrime.getSuspect().isEmpty()) {
+            mSuspectButton.setText(mCrime.getSuspect());
+        }
+
 
         PackageManager packageManager = getActivity().getPackageManager();
         if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null) {
@@ -172,13 +175,20 @@ public class CrimeFragment extends Fragment {
         // setup the call suspect button.
         mCallSuspectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String number = "tel:" + Uri.parse(mSuspectNumber);
+                String number = "tel:" + Uri.parse(mCrime.getSuspectPhoneNumber());
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse(number));
                 startActivity(intent);
             }
         });
-        mCallSuspectButton.setEnabled(false);
+
+        if (!mCrime.getSuspectPhoneNumber().isEmpty()) {
+            mCallSuspectButton.setEnabled(true);
+        }
+        else {
+            mCallSuspectButton.setEnabled(false);
+        }
+
         return v;
     }
 
@@ -270,9 +280,10 @@ public class CrimeFragment extends Fragment {
                             return;
                         }
 
-                        mSuspectNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        String suspectNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        mCrime.setSuspectPhoneNumber(suspectNumber);
 
-                        if (mSuspectNumber.length() > 6) {
+                        if (mCrime.getSuspectPhoneNumber().length() > 6) {
                             mCallSuspectButton.setEnabled(true);
                         }
                     }
