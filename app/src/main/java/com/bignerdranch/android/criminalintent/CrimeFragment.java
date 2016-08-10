@@ -224,7 +224,12 @@ public class CrimeFragment extends Fragment {
                 Uri contactUri = data.getData();
 
                 // specify which fields you want to query to return values for.
-                String[] queryFields = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
+                String[] queryFields = new String[] {
+                        // ContactsContract.Contacts.DISPLAY_NAME,
+                        // ContactsContract.Contacts.HAS_PHONE_NUMBER
+                        ContactsContract.Contacts._ID
+                        , ContactsContract.Contacts.DISPLAY_NAME
+                };
 
                 // perform query with the contentresolver.
                 Cursor cursor = getActivity()
@@ -239,9 +244,32 @@ public class CrimeFragment extends Fragment {
 
                     // Pull out the first column of the first row of data.
                     cursor.moveToFirst();
-                    String suspect = cursor.getString(0);
+                    int suspectId = cursor.getInt(0);
+                    String suspect = cursor.getString(1);
                     mCrime.setSuspect(suspect);
                     mSuspectButton.setText(suspect);
+
+                    Cursor phoneCursor = getActivity()
+                            .getContentResolver()
+                            .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+                                , null
+                                , ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " =? "
+                                , new String[] { Integer.toString(suspectId) }
+                                , null
+                            );
+                        try {
+                            if (phoneCursor.getCount() == 0) {
+                                return;
+                            }
+
+                            phoneCursor.moveToFirst();
+                            phoneCursor.getString(0);
+                        }
+                        finally {
+                            phoneCursor.close();
+                        }
+
+
                 }
                 finally {
                     cursor.close();
