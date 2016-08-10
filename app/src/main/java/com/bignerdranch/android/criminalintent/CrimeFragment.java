@@ -37,13 +37,15 @@ import java.util.UUID;
  */
 public class CrimeFragment extends Fragment {
 
-    private static final String ARG_CRIME_ID = "crime_id";
-    private static final String DIALOG_DATE  = "DialogDate";
-    private static final String DIALOG_TIME  = "DialogTime";
-    private static final int REQUEST_DATE    = 0;
-    private static final int REQUEST_TIME    = 1;
-    private static final int REQUEST_CONTACT = 2;
-    private static final int REQUEST_PHOTO   = 3;
+    private static final String ARG_CRIME_ID      = "crime_id";
+    private static final String DIALOG_DATE       = "DialogDate";
+    private static final String DIALOG_TIME       = "DialogTime";
+    private static final String DIALOG_VIEW_PHOTO = "DialogViewPhoto";
+    private static final int REQUEST_DATE       = 0;
+    private static final int REQUEST_TIME       = 1;
+    private static final int REQUEST_CONTACT    = 2;
+    private static final int REQUEST_PHOTO      = 3;
+    private static final int REQUEST_VIEW_PHOTO = 4;
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -222,7 +224,17 @@ public class CrimeFragment extends Fragment {
         });
 
         // setup the PhotoView.
+        mPhotoView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                FragmentManager fm = getFragmentManager();
+                CrimePhotoViewerFragment photoDialog = CrimePhotoViewerFragment.newInstance(CrimeLab.get(getActivity()).getPhotoFile(mCrime));
+                photoDialog.setTargetFragment(CrimeFragment.this, REQUEST_VIEW_PHOTO);
+                photoDialog.show(fm, DIALOG_VIEW_PHOTO);
+            }
+        });
         updatePhotoView();
+
+
 
         return v;
     }

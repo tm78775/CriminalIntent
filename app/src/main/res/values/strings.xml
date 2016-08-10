@@ -18,6 +18,7 @@
     <string name="crime_suspect_text">Choose Suspect</string>
     <string name="crime_report_text">Send Crime Report</string>
     <string name="call_suspect">Call Suspect</string>
+    <string name="crime_scene">Crime Scene Photo</string>
 
     <plurals name="subtitle_plural">
         <item quantity="one">%1$s crime</item>
