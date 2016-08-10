@@ -22,11 +22,13 @@ public class CrimeBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + CrimeTable.NAME +
             "(" +
-              Cols.UUID    + ", " +
-              Cols.TITLE   + ", " +
-              Cols.DATE    + ", " +
-              Cols.SOLVED  + ", " +
-              Cols.SUSPECT +
+              Cols.UUID        + ", " +
+              Cols.TITLE       + ", " +
+              Cols.DATE        + ", " +
+              Cols.SOLVED      + ", " +
+              Cols.SUSPECT_ID  + ", " +
+              Cols.SUSPECT_NUM + ", " +
+              Cols.SUSPECT     +
             ")"
         );
     }
