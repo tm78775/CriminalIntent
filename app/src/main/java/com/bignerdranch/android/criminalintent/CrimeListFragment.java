@@ -1,6 +1,6 @@
 package com.bignerdranch.android.criminalintent;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +30,13 @@ public class CrimeListFragment extends Fragment {
     private Button mAddCrimeBtn;
     private boolean mSubtitleVisible;
     private int mCrimeIndex = -1;
+    private Callbacks mCallbacks;
+
+    // This interface is a REQUIRED implementation for an activity hosting this fragment.
+    // This fragment will utilize the interface to communicate with the hosting activity.
+    public interface Callbacks {
+        void onCrimeSelected(Crime crime);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +75,18 @@ public class CrimeListFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_crime_list, menu);
@@ -103,7 +122,7 @@ public class CrimeListFragment extends Fragment {
         outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
     }
 
-    private void updateUI() {
+    public void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
@@ -120,21 +139,6 @@ public class CrimeListFragment extends Fragment {
         mCrimeRecyclerView.setAdapter(mCrimeAdapter);
         mCrimeAdapter.setCrimes(crimes);
         mCrimeAdapter.notifyDataSetChanged();
-
-        /* THIS HAD TO BE REMOVED TO MAKE THE DELETE FUNCTIONALITY OPERATIONAL. IT WAS THROWING AN EXCEPTION.
-        if (mCrimeAdapter == null) {
-            mCrimeAdapter = new CrimeAdapter(crimes);
-            mCrimeRecyclerView.setAdapter(mCrimeAdapter);
-        }
-        else {
-            if (mCrimeIndex >= 0) {
-                mCrimeAdapter.notifyItemChanged(mCrimeIndex);
-            }
-            else {
-                mCrimeAdapter.notifyDataSetChanged();
-            }
-        }
-        */
 
         updateSubtitle();
     }
@@ -155,8 +159,10 @@ public class CrimeListFragment extends Fragment {
     private void createNewCrime() {
         Crime crime = new Crime();
         CrimeLab.get(getActivity()).addCrime(crime);
-        Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
-        startActivity(intent);
+        // Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+        // startActivity(intent);
+        updateUI();
+        mCallbacks.onCrimeSelected(crime);
     }
 
     /*
@@ -189,8 +195,7 @@ public class CrimeListFragment extends Fragment {
 
         public void onClick(View v) {
             mCrimeIndex = this.getAdapterPosition();
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            mCallbacks.onCrimeSelected(mCrime);
         }
 
     }

@@ -58,7 +58,13 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
+    private Callbacks mCallbacks;
 
+    // Any activities wishing to host this fragment MUST implement this interface.
+    // Required for communication between fragment and hosting activity.
+    public interface Callbacks {
+        void onCrimeUpdated(Crime crime);
+    }
 
     /*
      *  Return a new instance of itself.
@@ -75,6 +81,18 @@ public class CrimeFragment extends Fragment {
     /*
      *  Overridden (Inherited) methods
      */
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +139,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 mCrime.setTitle(charSequence.toString());
+                updateCrime();
             }
             @Override
             public void afterTextChanged(Editable editable) {
@@ -155,6 +174,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                updateCrime();
             }
         });
 
@@ -277,6 +297,7 @@ public class CrimeFragment extends Fragment {
                 Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
                 mCrime.setDate(date);
                 updateDate(mCrime.getDate().toString());
+                updateCrime();
                 break;
             case REQUEST_TIME:
                 Date time = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
@@ -284,6 +305,7 @@ public class CrimeFragment extends Fragment {
                 date.setMinutes(time.getMinutes());
                 date.setHours(time.getHours());
                 mTimeButton.setText(date.getHours() + ":" + date.getMinutes());
+                updateCrime();
                 break;
             case REQUEST_CONTACT:
                 if (data == null) {
@@ -350,9 +372,11 @@ public class CrimeFragment extends Fragment {
                 finally {
                     cursor.close();
                 }
+                updateCrime();
                 break;
             case REQUEST_PHOTO:
                 updatePhotoView();
+                updateCrime();
                 break;
         }
 
@@ -398,5 +422,10 @@ public class CrimeFragment extends Fragment {
             Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
             mPhotoView.setImageBitmap(bitmap);
         }
+    }
+
+    private void updateCrime() {
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 }
