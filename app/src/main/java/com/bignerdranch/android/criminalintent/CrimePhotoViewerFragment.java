@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -20,6 +21,7 @@ public class CrimePhotoViewerFragment extends AppCompatDialogFragment {
     public static final String EXTRA_PHOTO = "com.bignerdranch.android.criminalintent.photoviewer";
     private static final String ARG_PHOTO_DIR = "photo_dir";
     private ImageView mImageView;
+    private String mPhotoDir;
 
     public static CrimePhotoViewerFragment newInstance(File photoDir) {
         Bundle args = new Bundle();
@@ -35,10 +37,16 @@ public class CrimePhotoViewerFragment extends AppCompatDialogFragment {
         super.onCreateDialog(savedInstanceState);
 
         File photoDir = (File) getArguments().getSerializable(ARG_PHOTO_DIR);
-        String strPhotoDir = photoDir.toString();
+        mPhotoDir = photoDir.toString();
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_photo_viewer, null);
         mImageView = (ImageView) v.findViewById(R.id.crime_photo_view);
-        mImageView.setImageBitmap(PictureUtils.getScaledBitmap(strPhotoDir, getActivity()));
+        ViewTreeObserver observer = v.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                updatePhotoView();
+            }
+        });
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
@@ -49,6 +57,10 @@ public class CrimePhotoViewerFragment extends AppCompatDialogFragment {
                     }
                 })
                 .create();
+    }
+
+    private void updatePhotoView() {
+        mImageView.setImageBitmap(PictureUtils.getScaledBitmap(mPhotoDir, getActivity()));
     }
 
 }

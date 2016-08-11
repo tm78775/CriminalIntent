@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -232,12 +233,19 @@ public class CrimeFragment extends Fragment {
                 photoDialog.show(fm, DIALOG_VIEW_PHOTO);
             }
         });
-        updatePhotoView();
 
-
+        // efficient loading of the imageview thumbnail. (Ch 16 Challenge)
+        ViewTreeObserver observer = v.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                updatePhotoView();
+            }
+        });
 
         return v;
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
